@@ -20,6 +20,12 @@ class Start:
             self.Board[z][self.Size - 1 - z] = '1'
             self.Board[self.Size - 1 - z][self.Size - 1 - z] = '2'
 
+    def get_board_as_string(self):
+        lines = []
+        for row in self.Board:  # or self.Board if that's the attribute
+            lines.append(" ".join(row))  # or format pieces however you print
+        return "\n".join(lines)
+
     def print_board(self):
         length = len(str(self.Size - 1))
         for y in range(self.Size):
@@ -79,6 +85,13 @@ if choice == 3:
     start = Start(Size, Board, X, Y)
     comm = CMD(Board, Size, Depth, X, Y, choice)
 
+    # Create output dir if needed
+    os.makedirs("output", exist_ok=True)
+    log_file = "output/game_log.txt"
+
+    # Clear previous log
+    open(log_file, "w").close()
+
     # Fire-up the beast
     start.start_board()
 
@@ -88,10 +101,22 @@ if choice == 3:
     alpha_time = 0
     while True:
         for p in range(2):
+            # Get board as string instead of printing
+            board_str = start.get_board_as_string()  # You'll implement this
+
 
             start.print_board()
             player = str(p + 1)
             print("player: " + player + '\n')
+            status = f"Player: {player}\n{board_str}\n"
+
+            print(status)  # Optional: keep terminal print
+
+            with open(log_file, "a") as f:
+                f.write(status + "\n")
+
+            time.sleep(1)  # simulate move delay
+
             if comm.is_terminal_node(start.Board, player):
                 end_time = time.time()
                 print('GAME OVER!!!\n')
@@ -100,27 +125,46 @@ if choice == 3:
                 print("Total Time Taken to finish the game: " + str(end_time - start_time))
                 print('Score Mini_Max: ' + str(comm.eval_board(Board, '1')))
                 print('Score Alpha_Beta  : ' + str(comm.eval_board(Board, '2')))
+                with open(log_file, "a") as f:
+                    f.write(f"Time Taken by Min-Max Algorithm:  {min_time:.2f} (seconds)\n")
+                    f.write(f"\nTime Taken by Alpha-Beta Algorithm: {alpha_time:.2f} (seconds)\n")
+                    f.write(f"\nTotal Time Taken to finish the game:  {(end_time - start_time):.2f} (seconds)\n")
+                    f.write('\nScore Mini_Max: ' + str(comm.eval_board(Board, '1')))
+                    f.write('\nScore Alpha_Beta  : ' + str(comm.eval_board(Board, '2')))
+                    f.write("\n\n=== GAME OVER ===\n")
                 sys.exit(0)
 
             if player == '1':  # Mini-Max's turn
                 min_time_start = time.time()
+                with open(log_file, "a") as f:
+                    f.write("Player Name : Mini_Max ")
                 print("Player Name : Mini_Max ")
+
                 (x, y) = comm.ai_best_move(start.Board, player)
                 if not (x == -1 and y == -1):
                     (start.Board, disk_remove) = comm.make_move(start.Board, x, y, player)
-                    print('Min-Max played X Y : ' + str(x) + ' ' + str(y))
+                    print('Min-Max played (X Y) : ' + str(x) + ' ' + str(y))
                     print('Disk Removed : ' + str(disk_remove) + '\n')
+                    with open(log_file, "a") as f:
+                        f.write('Min-Max played (X Y) : ' + str(x) + ' ' + str(y))
+                        f.write(' Disk Removed : ' + str(disk_remove) + '\n')
                     min_time_end = time.time()
                     min_time = min_time + (min_time_end - min_time_start)
 
             else:  # Alpha-Beta turn
                 alpha_time_start = time.time()
+                with open(log_file, "a") as f:
+                    f.write("Player Name : Alpha Beta ")
                 print("Player Name : Alpha Beta ")
                 (x, y) = comm.ai_best_move(start.Board, player)
                 if not (x == -1 and y == -1):
                     (start.Board, disk_remove) = comm.make_move(start.Board, x, y, player)
-                    print('Alpha-Beta played X Y : ' + str(x) + ' ' + str(y))
-                    print('Disk Removed : ' + str(disk_remove) + '\n')
+                    with open(log_file, "a") as f:
+                        f.write('Alpha-Beta played (X Y) : ' + str(x) + ' ' + str(y))
+                        f.write(' Disk Removed : ' + str(disk_remove) + '\n')
+                    print('Alpha-Beta played (X Y) : ' + str(x) + ' ' + str(y))
+                    print(' Disk Removed : ' + str(disk_remove) + '\n')
+
                     alpha_time_end = time.time()
                     alpha_time = alpha_time + (alpha_time_end - alpha_time_start)
 

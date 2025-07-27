@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reversi AI vs AI</title>
+  {% if not game_over %}
+  <meta http-equiv="refresh" content="2">
+  {% endif %}
+  <style>
+    body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+    pre { background: white; padding: 20px; border: 1px solid #ccc; }
+    .over { color: red; font-weight: bold; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Reversi AI vs AI</h1>
+  <pre>{{ log }}</pre>
+
+  {% if game_over %}
+    <div class="over">✅ Game Over</div>
+  {% endif %}
+</body>
+</html>

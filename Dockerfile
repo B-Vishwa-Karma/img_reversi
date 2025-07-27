@@ -1,22 +1,19 @@
- 
+
 FROM python
-#FROM jpgmoreira/coloramatest 
 
 WORKDIR /reverse_ai
 
-# from colorama 
-# import Fore
-# Install dependencies
-# RUN apt-get update && apt-get install -y \
-#    colorama
+COPY . .
 
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install dependencies
 RUN python3 -m pip install colorama 
 
-COPY . /reverse_ai
+# Make sure the output directory exists
+RUN mkdir -p output
 
-# For Anonymous volumes only
-# VOLUME [ "/ai_data/test/" ]
+# Expose Flask default port
+EXPOSE 5000
 
-# EXPOSE 80
-
-CMD [ "python", "main.py" ]
+CMD [ "sh", "start.sh" ]
