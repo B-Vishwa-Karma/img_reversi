@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN python3 -m pip install colorama 
 
 # Make sure the output directory exists
-RUN mkdir -p output
+RUN mkdir -p output && chmod -R 777 output
 
 # Expose Flask default port
 EXPOSE 5000

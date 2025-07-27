@@ -90,7 +90,7 @@ if choice == 3:
     log_file = "output/game_log.txt"
 
     # Clear previous log
-    # open(log_file, "w").close()
+    open(log_file, "w").close()
 
     # Fire-up the beast
     start.start_board()
