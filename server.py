@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     log_path = os.path.join("output", "game_log.txt")
-    content = "Game hasn't started yet..."
+    content = "Welcome everybody, Game hasn't started yet..."
     game_over = False
     final_stats = ""
 
